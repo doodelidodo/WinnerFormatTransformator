@@ -1,0 +1,21 @@
+Artikel-Nr.;Beschreibung;Einheit (Text);Warengruppen-ID;Produktgruppen-ID;Produktgruppename;Suchgruppen-ID;Suchgruppename;Abrunden zu;Preiseinheit;Berechnung;Montagezeit;Recyclinggebühren;Referenz;Volumen;Zeichnungstyp-ID;EDV;EAN;1.Preisgruppe;2.Preisgruppe;3.Preisgruppe;4.Preisgruppe;5.Preisgruppe
+438;Stangengriff 320 schwarz;Stk;1;1;Küchen;37;Zubehör;1;0;;3;0;2022-1;0;4;;;71.484;71.484;;;71.484
+526;Kantengriff Inoxlook;Stk;1;1;Küchen;37;Zubehör;1;0;;3;0;2022-1;0;4;;;107.8056;107.8056;;;107.8056
+685-C;Griffleiste Inoxlook, C-Profil;Stk;1;1;Küchen;37;Zubehör;1;0;;0;0;2022-1;0;4;;;119.0112;119.0112;;;119.0112
+685-L;Griffleiste Inoxlook, L-Profil;Stk;1;1;Küchen;37;Zubehör;1;0;;0;0;2022-1;0;4;;;119.0112;119.0112;;;119.0112
+685-U;Griffleiste Inoxlook, U-Profil;Stk;1;1;Küchen;37;Zubehör;1;0;;0;0;2022-1;0;4;;;119.0112;119.0112;;;119.0112
+900-125@@2;Griffmuldenprofil Aluminium farblos eloxiert, Länge 125cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;20;0;;0;9;;;165.6;;;;
+900-215-CV@@3;Griffmuldenprofil Aluminium, farblos eloxiert, L=215cm, vertikal;Stk;1;3;STEIN-DESIGN-Hochschrank;1708;Griffe;1;0;;35;0;neu 2022-2;0;2;;;;;;;327.75
+900-290@@2;Griffmuldenprofil Aluminium farblos eloxiert, Länge 290cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;35;0;;0;9;;;231.15;;;;
+901-125@@2;Griffmuldenprofil Aluminium black eloxiert, Länge 125cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;20;0;;0;9;;;338.1;;;;
+901-215-CV@@3;Griffmuldenprofil Aluminium, black eloxiert, L=215cm, vertikal;Stk;1;3;STEIN-DESIGN-Hochschrank;1708;Griffe;1;0;;35;0;neu 2022-2;0;2;;;;;;;738.3
+901-290@@2;Griffmuldenprofil Aluminium black eloxiert, Länge 290cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;35;0;;0;9;;;586.5;;;;
+902-125@@2;Griffmuldenprofil Aluminium gold eloxiert, Länge 125cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;20;0;;0;9;;;338.1;;;;
+902-215-CV@@3;Griffmuldenprofil Aluminium, gold eloxiert, L=215cm, vertikal;Stk;1;3;STEIN-DESIGN-Hochschrank;1708;Griffe;1;0;;35;0;neu 2022-2;0;2;;;;;;;738.3
+902-290@@2;Griffmuldenprofil Aluminium gold eloxiert, Länge 290cm;Stk;1;2;STEIN-DESIGN;1708;Griffe;1;0;;35;0;;0;9;;;586.5;;;;
+AS60101@@1;Aufsatzschrank, 1 Tür, 3 Tablare;Stk;1;1;Küchen;2;Hochschrank;1;0;;20.5;0;2022-1;0;2;;;341.0946;365.8277;;;1068.3201
+H9050LRCH;Oberschrank, 2 Türen unten überstehend, Parallelanschlag (auch für Ecklösung), 1 Tablar;Stk;1;1;Küchen;3;Oberschrank;1;0;;25.05;0;2022-1;0;2;;;286.7088;307.5537;;;723.3546
+H9050SW@@1;Oberschrank, 1 Hochschwenkklappe, 1 Tablar;Stk;1;1;Küchen;3;Oberschrank;1;0;;25.05;0;2022-1;0;2;;;588.777;631.5639;;;1894.6917
+H9063@@1;Oberschrank, 2 Türen, 2 Tablare;Stk;1;1;Küchen;3;Oberschrank;1;0;;25.05;0;2022-1;0;2;;;345.5865;370.8198;;;874.023
+STANDARDTUER@@1;Standardtür, optionale Ausstattungsvarianten möglich;Stk;1;1;Küchen;1702;Ausstattungsvarianten;1;0;;0;0;2022-1;0;11;;;0.0345;0.0345;;;0.0345
+STANDARDTUER@@3;Ausstattungsvariante Standardtür;Stk;1;3;STEIN-DESIGN-Hochschrank;1702;Ausstattungsvarianten;1;0;;0;0;neu 2022-2;0;11;;;;;;;0.03

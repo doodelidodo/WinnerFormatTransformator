@@ -1,0 +1,170 @@
+{
+    "config": {
+        "prefix": [
+            {
+                "FileName": "AEG",
+                "prefix": "AI"
+            },
+            {
+                "FileName": "AMEU",
+                "prefix": "AI"
+            },
+            {
+                "FileName": "BAUKD",
+                "prefix": "BA"
+            },
+            {
+                "FileName": "BLAND",
+                "prefix": "BL"
+            },
+            {
+                "FileName": "BUCHD",
+                "prefix": "BU"
+            },
+            {
+                "FileName": "CONCD",
+                "prefix": "CO"
+            },
+            {
+                "FileName": "DEDID",
+                "prefix": "DE"
+            },
+            {
+                "FileName": "DORND",
+                "prefix": "DO"
+            },
+            {
+                "FileName": "ELECD",
+                "prefix": "EL"
+            },
+            {
+                "FileName": "ELMBD",
+                "prefix": "EL"
+            },
+            {
+                "FileName": "ELUXD",
+                "prefix": "EL"
+            },
+            {
+                "FileName": "FORSD",
+                "prefix": "FO"
+            },
+            {
+                "FileName": "FRAND",
+                "prefix": "FR"
+            },
+            {
+                "FileName": "GAGGD",
+                "prefix": "GA"
+            },
+            {
+                "FileName": "GROHD",
+                "prefix": "GR"
+            },
+            {
+                "FileName": "GUTM",
+                "prefix": "GU"
+            },
+            {
+                "FileName": "HAGRD",
+                "prefix": "HG"
+            },
+            {
+                "FileName": "KMD",
+                "prefix": "KM"
+            },
+            {
+                "FileName": "KUPP",
+                "prefix": "KW"
+            },
+            {
+                "FileName": "KWC",
+                "prefix": "GA"
+            },
+            {
+                "FileName": "MERID",
+                "prefix": "MR"
+            },
+            {
+                "FileName": "MIELD",
+                "prefix": "MI"
+            },
+            {
+                "FileName": "NOID",
+                "prefix": "NO"
+            },
+            {
+                "FileName": "OPOOD",
+                "prefix": "OP"
+            },
+            {
+                "FileName": "PEKAD",
+                "prefix": "PE"
+            },
+            {
+                "FileName": "POGGD",
+                "prefix": "PG"
+            },
+            {
+                "FileName": "POGG",
+                "prefix": "PG"
+            },
+            {
+                "FileName": "PRNOD",
+                "prefix": "PR"
+            },
+            {
+                "FileName": "QUOK",
+                "prefix": "QU"
+            },
+            {
+                "FileName": "RWKE",
+                "prefix": "H1"
+            },
+            {
+                "FileName": "SAMSD",
+                "prefix": "SC"
+            },
+            {
+                "FileName": "SIBID",
+                "prefix": "SB"
+            },
+            {
+                "FileName": "SIEMD",
+                "prefix": "SI"
+            },
+            {
+                "FileName": "SIKUD",
+                "prefix": "SK"
+            },
+            {
+                "FileName": "SUTED",
+                "prefix": "SU"
+            },
+            {
+                "FileName": "VERID",
+                "prefix": "VE"
+            },
+            {
+                "FileName": "VZUGD",
+                "prefix": "VZ"
+            },
+            {
+                "FileName": "WHITD",
+                "prefix": "WI"
+            },
+            {
+                "FileName": "WSCOD",
+                "prefix": "WS"
+            },
+            {
+                "FileName": "ZANUD",
+                "prefix": "ZA"
+            },
+            {
+                "FileName": "SIT",
+                "prefix": "HS"
+            }
+        ]
+    }
+}
