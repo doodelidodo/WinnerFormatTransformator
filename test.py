@@ -1,8 +1,10 @@
-from datetime import datetime
-  
-# datetime in string format for may 25 1999
-input = '2021/05/25'
-  
-dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-print(dt)
-  
+import configparser
+import json
+parser = configparser.ConfigParser()
+parser.read('WinnerTransformator.cfg')
+
+print(parser.get('Default', 'importFolder'))
+prefixes = json.loads(parser.get('Default', 'prefixes'))
+
+for prefix in prefixes:
+    print(prefix['FileName'])

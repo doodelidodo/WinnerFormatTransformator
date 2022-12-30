@@ -2,24 +2,26 @@ from numpy import NaN, empty
 import pandas as pd
 import json
 from datetime import datetime
+import os
+import configparser
 
-# ToDo
-# - FileName anpassen
-
+parser = configparser.ConfigParser()
+parser.read('WinnerTransformator.cfg')
 
 SEPARATOR = ';'
 ENCODING = 'cp1252'
+prefixes = json.loads(parser.get('Default', 'prefixes'))
+IMPORT_FOLDER = parser.get('Default', 'importFolder')
+EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 
-config_file = open('config.json')
-config = json.load(config_file)
-prefixes = config['config']['prefix']
+# TODO
+# Name KonditionenKlassierung - woher kommt der?
 
-def import_excel(file_name):
-    excel_data = pd.read_excel(file_name)
-    return pd.DataFrame(excel_data)
-
-def import_csv(file_name):
-    csv_data = pd.read_csv(file_name, sep = SEPARATOR, encoding = ENCODING)
+def get_file_from_folder():
+    return os.listdir(IMPORT_FOLDER)[0]
+    
+def import_csv():
+    csv_data = pd.read_csv(IMPORT_FOLDER+get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING)
     return pd.DataFrame(csv_data)
 
 def transform_dataset(df, prefix):
@@ -68,7 +70,7 @@ def export_import_files(df, prefix):
         else: 
             non_varianten = pd.concat([non_varianten, filteredProds])
     dt = dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    file_name_var = "export/" + prefix + "-var-" + dt + ".xlsx"
-    file_name_non_var = "export/" + prefix + "-non_var-" + dt + ".xlsx"
+    file_name_var = EXPORT_FOLDER + prefix + "-var-" + dt + ".xlsx"
+    file_name_non_var = EXPORT_FOLDER + prefix + "-non_var-" + dt + ".xlsx"
     varianten.to_excel(file_name_var, index=False) 
     non_varianten.to_excel(file_name_non_var, index=False)
