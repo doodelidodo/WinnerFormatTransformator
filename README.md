@@ -1,2 +1,2 @@
 # WinnerFormatTransformator
-This Tool transform csv Exports from Winner into readable excel for an ERP to import. 
+This Tool transforms csv Exports from Winner into readable excel for an ERP to import. 
