@@ -17,12 +17,15 @@ EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 # TODO
 # Name KonditionenKlassierung - woher kommt der?
 
+
 def get_file_from_folder():
     return os.listdir(IMPORT_FOLDER)[0]
-    
+
+
 def import_csv():
     csv_data = pd.read_csv(IMPORT_FOLDER+get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING)
     return pd.DataFrame(csv_data)
+
 
 def transform_dataset(df, prefix):
     df = df.rename(columns={"Artikel-Nr.": "ArtikelNr"})
@@ -35,6 +38,7 @@ def transform_dataset(df, prefix):
     data = data.assign(Preisgruppe = lambda dataframe: dataframe['Preisgruppe']
     .map(lambda anr: anr.split(".")[0]))
     return data
+
 
 def pricegroup_separator(df):
     preisgruppen = []
@@ -49,16 +53,17 @@ def pricegroup_separator(df):
     data = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
     return data[data['Preis'].notnull()].sort_values(by=["ArtikelNr", "Preisgruppe"])
 
+
 def set_serie(df):
-    return df.assign(serie = lambda dataframe: dataframe['ArtikelNr']
-    .map(lambda anr: anr.split("@@",1)[1] if '@@' in anr else ''))
+    return df.assign(serie = lambda dataframe: dataframe['ArtikelNr'].map(lambda anr: anr.split("@@",1)[1] if '@@' in anr else ''))
 
 
 def get_prefix(fileName):
     for pref in prefixes: 
         if fileName.startswith(pref['FileName']):
             return pref['prefix']
-        
+
+
 def export_import_files(df, prefix):
     singleProds = df['ArtikelNr'].unique()
     varianten = pd.DataFrame()
