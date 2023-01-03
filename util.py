@@ -17,7 +17,6 @@ ERROR_FOLDER = parser.get('Default', 'errorFolder')
 
 # TODO
 # Name KonditionenKlassierung - woher kommt der?
-# Error Handling
 
 
 def get_file_from_folder():
@@ -64,7 +63,6 @@ def get_prefix(fileName):
     for pref in prefixes: 
         if fileName.startswith(pref['FileName']):
             the_pref = pref['prefix']
-    print(the_pref)
     if the_pref == "":
         raise Exception("Kein Prefix gefunden")
     else:
@@ -80,11 +78,13 @@ def export_import_files(df, prefix):
             varianten = pd.concat([varianten, filteredProds])
         else: 
             non_varianten = pd.concat([non_varianten, filteredProds])
+    varianten['variante'] = 1
+    non_varianten['variante'] = 0
+    frames = [varianten, non_varianten]
+    all_products = pd.concat(frames)
     dt = dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    file_name_var = EXPORT_FOLDER + prefix + "-var-" + dt + ".xlsx"
-    file_name_non_var = EXPORT_FOLDER + prefix + "-non_var-" + dt + ".xlsx"
-    varianten.to_excel(file_name_var, index=False) 
-    non_varianten.to_excel(file_name_non_var, index=False)
+    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
+    all_products.to_excel(file_name, index=False) 
 
 
 def error_handling(error):
