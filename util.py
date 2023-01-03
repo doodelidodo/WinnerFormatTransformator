@@ -1,4 +1,4 @@
-from numpy import NaN, empty
+from numpy import empty
 import pandas as pd
 import json
 from datetime import datetime
@@ -13,9 +13,11 @@ ENCODING = 'cp1252'
 prefixes = json.loads(parser.get('Default', 'prefixes'))
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
+ERROR_FOLDER = parser.get('Default', 'errorFolder')
 
 # TODO
 # Name KonditionenKlassierung - woher kommt der?
+# Error Handling
 
 
 def get_file_from_folder():
@@ -34,7 +36,6 @@ def transform_dataset(df, prefix):
     data['ArtikelNr'] = data['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
     data['ArtikelNr'] = prefix + "-" + data['ArtikelNr']
     data['prefix'] = prefix
-    data['Preisgruppe'] = data['Preisgruppe']
     data = data.assign(Preisgruppe = lambda dataframe: dataframe['Preisgruppe']
     .map(lambda anr: anr.split(".")[0]))
     return data
@@ -59,10 +60,15 @@ def set_serie(df):
 
 
 def get_prefix(fileName):
+    the_pref= ""
     for pref in prefixes: 
         if fileName.startswith(pref['FileName']):
-            return pref['prefix']
-
+            the_pref = pref['prefix']
+    print(the_pref)
+    if the_pref == "":
+        raise Exception("Kein Prefix gefunden")
+    else:
+        return the_pref
 
 def export_import_files(df, prefix):
     singleProds = df['ArtikelNr'].unique()
@@ -79,3 +85,9 @@ def export_import_files(df, prefix):
     file_name_non_var = EXPORT_FOLDER + prefix + "-non_var-" + dt + ".xlsx"
     varianten.to_excel(file_name_var, index=False) 
     non_varianten.to_excel(file_name_non_var, index=False)
+
+
+def error_handling(error):
+    with open(ERROR_FOLDER + "error.txt", "a") as f:
+        f.write(error)
+    raise(error)
