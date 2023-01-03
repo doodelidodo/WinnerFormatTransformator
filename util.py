@@ -10,10 +10,10 @@ parser.read('WinnerTransformator.cfg')
 
 SEPARATOR = ';'
 ENCODING = 'cp1252'
-prefixes = json.loads(parser.get('Default', 'prefixes'))
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 ERROR_FOLDER = parser.get('Default', 'errorFolder')
+prefixes = json.loads(parser.get('Default', 'prefixes'))
 
 # TODO
 # Name KonditionenKlassierung - woher kommt der?
@@ -43,13 +43,11 @@ def transform_dataset(df, prefix):
 def pricegroup_separator(df):
     preisgruppen = []
     not_preisgruppen = []
-
     for prod in df.columns:
         if 'Preisgruppe' in prod: 
             preisgruppen.append(prod)
         else: 
             not_preisgruppen.append(prod)
-
     data = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
     return data[data['Preis'].notnull()].sort_values(by=["ArtikelNr", "Preisgruppe"])
 
@@ -68,7 +66,15 @@ def get_prefix(fileName):
     else:
         return the_pref
 
+
 def export_import_files(df, prefix):
+    all_products = mark_variants(df)
+    dt = dt = datetime.now().strftime("%Y%m%d-%H%M%S")
+    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
+    all_products.to_excel(file_name, index=False) 
+
+
+def mark_variants(df):
     singleProds = df['ArtikelNr'].unique()
     varianten = pd.DataFrame()
     non_varianten = pd.DataFrame()
@@ -81,10 +87,7 @@ def export_import_files(df, prefix):
     varianten['variante'] = 1
     non_varianten['variante'] = 0
     frames = [varianten, non_varianten]
-    all_products = pd.concat(frames)
-    dt = dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
-    all_products.to_excel(file_name, index=False) 
+    return pd.concat(frames)
 
 
 def error_handling(error):
