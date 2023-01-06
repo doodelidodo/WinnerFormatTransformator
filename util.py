@@ -5,6 +5,8 @@ from datetime import datetime
 import os
 import configparser
 
+CONFIG = "D:/Abacus/WinnerImport/WinnterTransformator.cfg"
+
 parser = configparser.ConfigParser()
 parser.read('WinnerTransformator.cfg')
 
@@ -13,7 +15,7 @@ ENCODING = 'cp1252'
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 ERROR_FOLDER = parser.get('Default', 'errorFolder')
-prefixes = json.loads(parser.get('Default', 'prefixes'))
+PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
 # TODO
 # Name KonditionenKlassierung - woher kommt der?
@@ -24,7 +26,7 @@ def get_file_from_folder():
 
 
 def import_csv():
-    csv_data = pd.read_csv(IMPORT_FOLDER+get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING)
+    csv_data = pd.read_csv(IMPORT_FOLDER + get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING)
     return pd.DataFrame(csv_data)
 
 
@@ -58,7 +60,7 @@ def set_serie(df):
 
 def get_prefix(fileName):
     the_pref= ""
-    for pref in prefixes: 
+    for pref in PREFIXES: 
         if fileName.startswith(pref['FileName']):
             the_pref = pref['prefix']
     if the_pref == "":
@@ -86,8 +88,7 @@ def mark_variants(df):
             non_varianten = pd.concat([non_varianten, filteredProds])
     varianten['variante'] = 1
     non_varianten['variante'] = 0
-    frames = [varianten, non_varianten]
-    return pd.concat(frames)
+    return pd.concat([varianten, non_varianten])
 
 
 def error_handling(error):
