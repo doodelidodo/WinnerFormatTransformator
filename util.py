@@ -5,6 +5,7 @@ import os
 import configparser
 import tkinter as tk
 from tkinter import messagebox
+import re
 
 CONFIG = "D:/Abacus/WinnerImport/WinnterTransformator.cfg"
 
@@ -18,24 +19,22 @@ EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 ERROR_FOLDER = parser.get('Default', 'errorFolder')
 PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
-# TODO
-# Name KonditionenKlassierung - woher kommt der?
-
 
 def get_file_from_folder():
     return os.listdir(IMPORT_FOLDER)[0]
 
 
 def import_csv():
-    csv_data = pd.read_csv(IMPORT_FOLDER + get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING)
+    csv_data = pd.read_csv(IMPORT_FOLDER + get_file_from_folder(), sep = SEPARATOR, encoding = ENCODING, low_memory=False)
     return pd.DataFrame(csv_data)
 
 
 def transform_dataset(df, prefix):
-    df = df.rename(columns={"Artikel-Nr.": "ArtikelNr"})
+    df = df.rename(columns={"!Artikel-Nr.": "ArtikelNr"})
     data = pricegroup_separator(df)
     data = set_serie(data)
     data['ArtikelNr'] = data['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
+    data['ArtikelNr'] = data['ArtikelNr'].str.replace('#', '')
     data['ArtikelNr'] = prefix + "-" + data['ArtikelNr']
     data['prefix'] = prefix
     data = data.assign(Preisgruppe = lambda dataframe: dataframe['Preisgruppe']
@@ -62,7 +61,7 @@ def set_serie(df):
 def get_prefix(fileName):
     the_pref= ""
     for pref in PREFIXES: 
-        if fileName.startswith(pref['FileName']):
+        if get_label(fileName) == pref['FileName']:
             the_pref = pref['prefix']
     if the_pref == "":
         raise Exception("Kein Prefix gefunden")
@@ -108,3 +107,7 @@ def success():
 
 def delete_file():
     os.remove(IMPORT_FOLDER + get_file_from_folder())
+
+def get_label(file_name):
+    file_name = re.sub('[^a-zA-Z.]+', '', file_name)
+    return file_name.split('.')[0]
