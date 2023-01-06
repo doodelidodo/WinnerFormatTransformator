@@ -1,14 +1,15 @@
-from numpy import empty
 import pandas as pd
 import json
 from datetime import datetime
 import os
 import configparser
+import tkinter as tk
+from tkinter import messagebox
 
 CONFIG = "D:/Abacus/WinnerImport/WinnterTransformator.cfg"
 
 parser = configparser.ConfigParser()
-parser.read('WinnerTransformator.cfg')
+parser.read(CONFIG)
 
 SEPARATOR = ';'
 ENCODING = 'cp1252'
@@ -91,7 +92,19 @@ def mark_variants(df):
     return pd.concat([varianten, non_varianten])
 
 
-def error_handling(error):
+def error_handling(error, delete = True):
     with open(ERROR_FOLDER + "error.txt", "a") as f:
         f.write(error)
+    messagebox.showerror("Da ist was schief gelaufen", error)
+    if delete == True:
+        delete_file()
     raise(error)
+
+
+def success():
+    delete_file()
+    messagebox.showinfo("Erfolg", "Das File konnte erfolgreich auf den Server geladen und umgewandelt werden")
+
+
+def delete_file():
+    os.remove(IMPORT_FOLDER + get_file_from_folder())

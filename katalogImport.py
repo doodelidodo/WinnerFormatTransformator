@@ -3,7 +3,7 @@ from util import *
 try: 
     import_file = get_file_from_folder()
 except:
-    error_handling("Der Katalog konnte nicht auf den Server geladen werden")
+    error_handling("Der Katalog konnte nicht auf den Server geladen werden", False)
 
 
 try:
@@ -27,5 +27,6 @@ except:
 
 try:
     export_import_files(new_catalog, prefix)
+    success()
 except: 
     error_handling("Der Katalog konnte nicht exportiert werden")
