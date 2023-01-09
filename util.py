@@ -1,6 +1,4 @@
 import codecs
-import time
-
 import pandas as pd
 import json
 from datetime import datetime
@@ -97,8 +95,6 @@ def mark_variants(df):
 
 def error_handling(error, delete=True):
     file_name = ERROR_FOLDER + "error.txt"
-    print(error)
-    time.sleep(5)
     with codecs.open(file_name, "a", "utf-8") as f:
         f.write(error + "\n")
     if delete:
@@ -107,7 +103,6 @@ def error_handling(error, delete=True):
 
 def success():
     delete_file()
-    time.sleep(5)
 
 
 def delete_file():
