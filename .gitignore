@@ -3,5 +3,10 @@
 /export
 /import
 /error
+/dist
+/build
+/output
 WinnerTransformator.cfg
 test.py
+katalogImport.spec
+produktImport.spec
