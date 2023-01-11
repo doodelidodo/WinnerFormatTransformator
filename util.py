@@ -38,6 +38,7 @@ def transform_dataset(df, prefix):
     data['ArtikelNr'] = data['ArtikelNr'].str.replace('#', '')
     data['ArtikelNr'] = prefix + "-" + data['ArtikelNr']
     data['prefix'] = prefix
+    data['suffix'] = get_suffix(prefix)
     data = data.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
                        .map(lambda anr: anr.split(".")[0]))
     return data
@@ -70,6 +71,13 @@ def get_prefix(file_name):
     else:
         return the_pref
 
+def get_suffix(prefix):
+    for pref in PREFIXES:
+        if pref['prefix'] == prefix:
+            if 'suffix' in pref:
+                return pref['suffix']
+            else:
+                return ""
 
 def export_import_files(df, prefix):
     all_products = mark_variants(df)
