@@ -91,16 +91,11 @@ def export_import_files(df, prefix):
 
 def mark_variants(df):
     print('mark variants start ' + datetime.now().strftime("%H%M%S"))
-    single_prods = df['ArtikelNr'].unique()
-    varianten = pd.DataFrame()
-    non_varianten = pd.DataFrame()
+    counts = df.ArtikelNr.value_counts()
+
+    varianten = df[df.ArtikelNr.isin(counts.index[counts.gt(1)])]
+    non_varianten = df[df.ArtikelNr.isin(counts.index[counts.eq(1)])]
     
-    for prod in single_prods:
-        filtered_prods = df[df.ArtikelNr == prod]
-        if len(filtered_prods['ArtikelNr']) > 1:
-            varianten = pd.concat([varianten, filtered_prods])
-        else:
-            non_varianten = pd.concat([non_varianten, filtered_prods])
     varianten['variante'] = 1
     non_varianten['variante'] = 0
     print('mark variants end ' + datetime.now().strftime("%Y%m%d-%H%M%S"))
