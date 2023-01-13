@@ -83,14 +83,15 @@ def get_prefix(file_name):
 
 
 def export_import_files(df, prefix):
+    print('mark variants start ' + datetime.now().strftime("%H%M%S"))
     all_products = mark_variants(df)
+    print('mark variants end ' + datetime.now().strftime("%Y%m%d-%H%M%S"))
     dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
-    all_products.to_excel(file_name, index=False)
+    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
+    all_products.to_csv(file_name, index=False, sep=";")
 
 
 def mark_variants(df):
-    print('mark variants start ' + datetime.now().strftime("%H%M%S"))
     counts = df.ArtikelNr.value_counts()
 
     varianten = df[df.ArtikelNr.isin(counts.index[counts.gt(1)])]
@@ -98,10 +99,8 @@ def mark_variants(df):
     
     varianten['variante'] = 1
     non_varianten['variante'] = 0
-    print('mark variants end ' + datetime.now().strftime("%Y%m%d-%H%M%S"))
+    
     return pd.concat([varianten, non_varianten])
-    # return df.assign(
-    #   variante=lambda dataframe: dataframe['ArtikelNr'].map(lambda anr: 1 if len(df[df.ArtikelNr == anr]) > 1 else 0))
 
 
 def error_handling(error, delete=True):
