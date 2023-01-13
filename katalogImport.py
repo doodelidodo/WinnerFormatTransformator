@@ -12,8 +12,9 @@ try:
             try:
                 new_catalog = transform_dataset(new_catalog, prefix)
                 try:
-                    export_import_files(new_catalog, prefix)
+                    export_import_files(new_catalog, prefix['prefix'])
                     success()
+                    print(datetime.now().strftime("%Y%m%d-%H%M%S"))
 
                 except:
                     error_handling("Der Katalog konnte nicht exportiert werden")
@@ -28,16 +29,3 @@ try:
 
 except:
     error_handling("Der Katalog konnte nicht auf den Server geladen werden", False)
-
-
-
-
-
-
-
-
-# Die importierten Daten ins Abacus Format transformieren
-
-
-
-

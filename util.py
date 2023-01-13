@@ -1,4 +1,5 @@
 import codecs
+from fileinput import filename
 import pandas as pd
 import json
 from datetime import datetime
@@ -29,19 +30,28 @@ def import_csv():
 
 
 def transform_dataset(df, prefix):
+    print('transform start ' + datetime.now().strftime("%H%M%S"))
     df = df.astype({'!Artikel-Nr.': str})
     df = df.iloc[1:]
     df = df.rename(columns={"!Artikel-Nr.": "ArtikelNr"})
-    data = pricegroup_separator(df)
-    data = set_serie(data)
-    data['ArtikelNr'] = data['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
-    data['ArtikelNr'] = data['ArtikelNr'].str.replace('#', '')
-    data['ArtikelNr'] = prefix + "-" + data['ArtikelNr']
-    data['prefix'] = prefix
-    data['suffix'] = get_suffix(prefix)
-    data = data.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
+    print('serie start ' + datetime.now().strftime("%H%M%S"))
+    df = set_serie(df)
+    print('serie ende ' + datetime.now().strftime("%H%M%S"))
+    df['ArtikelNr'] = df['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
+    df['ArtikelNr'] = df['ArtikelNr'].str.replace('#', '')
+    df['ArtikelNr'] = prefix['prefix'] + "-" + df['ArtikelNr']
+    df['prefix'] = prefix['prefix']
+    if 'suffix' in prefix:
+        df['suffix'] = prefix['suffix']
+    else:
+        df['suffix'] = ""
+    print('preisgruppe start ' + datetime.now().strftime("%H%M%S"))
+    df = pricegroup_separator(df)
+    print('preisgruppe ende ' + datetime.now().strftime("%H%M%S"))
+    df = df.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
                        .map(lambda anr: anr.split(".")[0]))
-    return data
+    print('transform ende ' + datetime.now().strftime("%H%M%S"))
+    return df
 
 
 def pricegroup_separator(df):
@@ -52,8 +62,8 @@ def pricegroup_separator(df):
             preisgruppen.append(prod)
         else:
             not_preisgruppen.append(prod)
-    data = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
-    return data[data['Preis'].notnull()].sort_values(by=["ArtikelNr", "Preisgruppe"])
+    df = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
+    return df[df['Preis'].notnull()].sort_values(by=["ArtikelNr", "Preisgruppe"])
 
 
 def set_serie(df):
@@ -65,19 +75,12 @@ def get_prefix(file_name):
     the_pref = ""
     for pref in PREFIXES:
         if get_label(file_name) == pref['FileName']:
-            the_pref = pref['prefix']
+            the_pref = pref
     if the_pref == "":
         raise Exception("Kein Prefix gefunden")
     else:
         return the_pref
 
-def get_suffix(prefix):
-    for pref in PREFIXES:
-        if pref['prefix'] == prefix:
-            if 'suffix' in pref:
-                return pref['suffix']
-            else:
-                return ""
 
 def export_import_files(df, prefix):
     all_products = mark_variants(df)
@@ -87,9 +90,11 @@ def export_import_files(df, prefix):
 
 
 def mark_variants(df):
+    print('mark variants start ' + datetime.now().strftime("%H%M%S"))
     single_prods = df['ArtikelNr'].unique()
     varianten = pd.DataFrame()
     non_varianten = pd.DataFrame()
+    
     for prod in single_prods:
         filtered_prods = df[df.ArtikelNr == prod]
         if len(filtered_prods['ArtikelNr']) > 1:
@@ -98,7 +103,10 @@ def mark_variants(df):
             non_varianten = pd.concat([non_varianten, filtered_prods])
     varianten['variante'] = 1
     non_varianten['variante'] = 0
+    print('mark variants end ' + datetime.now().strftime("%Y%m%d-%H%M%S"))
     return pd.concat([varianten, non_varianten])
+    # return df.assign(
+    #   variante=lambda dataframe: dataframe['ArtikelNr'].map(lambda anr: 1 if len(df[df.ArtikelNr == anr]) > 1 else 0))
 
 
 def error_handling(error, delete=True):
