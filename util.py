@@ -1,5 +1,4 @@
 import codecs
-from fileinput import filename
 import pandas as pd
 import json
 from datetime import datetime
@@ -30,13 +29,10 @@ def import_csv():
 
 
 def transform_dataset(df, prefix):
-    print('transform start ' + datetime.now().strftime("%H%M%S"))
     df = df.astype({'!Artikel-Nr.': str})
     df = df.iloc[1:]
     df = df.rename(columns={"!Artikel-Nr.": "ArtikelNr"})
-    print('serie start ' + datetime.now().strftime("%H%M%S"))
     df = set_serie(df)
-    print('serie ende ' + datetime.now().strftime("%H%M%S"))
     df['ArtikelNr'] = df['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
     df['ArtikelNr'] = df['ArtikelNr'].str.replace('#', '')
     df['ArtikelNr'] = prefix['prefix'] + "-" + df['ArtikelNr']
@@ -45,12 +41,9 @@ def transform_dataset(df, prefix):
         df['suffix'] = prefix['suffix']
     else:
         df['suffix'] = ""
-    print('preisgruppe start ' + datetime.now().strftime("%H%M%S"))
     df = pricegroup_separator(df)
-    print('preisgruppe ende ' + datetime.now().strftime("%H%M%S"))
     df = df.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
-                       .map(lambda anr: anr.split(".")[0]))
-    print('transform ende ' + datetime.now().strftime("%H%M%S"))
+                   .map(lambda anr: anr.split(".")[0]))
     return df
 
 
@@ -83,23 +76,21 @@ def get_prefix(file_name):
 
 
 def export_import_files(df, prefix):
-    print('mark variants start ' + datetime.now().strftime("%H%M%S"))
     all_products = mark_variants(df)
-    print('mark variants end ' + datetime.now().strftime("%Y%m%d-%H%M%S"))
     dt = datetime.now().strftime("%Y%m%d-%H%M%S")
     file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
-    all_products.to_csv(file_name, index=False, sep=";")
+    all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding=ENCODING)
 
 
 def mark_variants(df):
     counts = df.ArtikelNr.value_counts()
 
-    varianten = df[df.ArtikelNr.isin(counts.index[counts.gt(1)])]
-    non_varianten = df[df.ArtikelNr.isin(counts.index[counts.eq(1)])]
-    
+    varianten = df[df.ArtikelNr.isin(counts.index[counts.gt(1)])].copy()
+    non_varianten = df[df.ArtikelNr.isin(counts.index[counts.eq(1)])].copy()
+
     varianten['variante'] = 1
     non_varianten['variante'] = 0
-    
+
     return pd.concat([varianten, non_varianten])
 
 

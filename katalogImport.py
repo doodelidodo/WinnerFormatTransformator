@@ -14,7 +14,6 @@ try:
                 try:
                     export_import_files(new_catalog, prefix['prefix'])
                     success()
-                    print(datetime.now().strftime("%Y%m%d-%H%M%S"))
 
                 except:
                     error_handling("Der Katalog konnte nicht exportiert werden")
