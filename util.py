@@ -15,6 +15,7 @@ SEPARATOR = ';'
 ENCODING = 'cp1252'
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
+EXPORT_TYPE = parser.get('Default', 'exportType')
 ERROR_FOLDER = parser.get('Default', 'errorFolder')
 PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
@@ -78,8 +79,13 @@ def get_prefix(file_name):
 def export_import_files(df, prefix):
     all_products = mark_variants(df)
     dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
-    all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding=ENCODING)
+    if EXPORT_TYPE == 'xlsx':
+        file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
+        all_products.to_excel(file_name, index=False, engine="xlsxwriter")
+    else:
+        file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
+        all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding=ENCODING)
+    
 
 
 def mark_variants(df):
