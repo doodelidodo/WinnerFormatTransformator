@@ -44,7 +44,7 @@ def transform_dataset(df, prefix):
     df['ArtikelNr'] = prefix['prefix'] + "-" + df['ArtikelNr']
     df['PreisPer'] = price_per
     df['Teuerung'] = inflation
-    df['Beschreibung'] = df['Beschreibung'].str.replace("\n", "")
+    df['Beschreibung'] = df['Beschreibung'].str.replace("\n", " ")
     df['prefix'] = prefix['prefix']
     if 'suffix' in prefix:
         df['suffix'] = prefix['suffix']
