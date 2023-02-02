@@ -5,6 +5,11 @@ from datetime import datetime
 import os
 import configparser
 import re
+import sys
+
+price_per = str(sys.argv[1])
+inflation = str(sys.argv[2])
+
 
 CONFIG = "D:/Abacus/WinnerImport/WinnerTransformator.cfg"
 
@@ -12,7 +17,7 @@ parser = configparser.ConfigParser()
 parser.read(CONFIG)
 
 SEPARATOR = ';'
-ENCODING = 'cp1252'
+ENCODING = 'latin1'
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
 EXPORT_TYPE = parser.get('Default', 'exportType')
@@ -37,11 +42,14 @@ def transform_dataset(df, prefix):
     df['ArtikelNr'] = df['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
     df['ArtikelNr'] = df['ArtikelNr'].str.replace('#', '')
     df['ArtikelNr'] = prefix['prefix'] + "-" + df['ArtikelNr']
+    df['PreisPer'] = price_per
+    df['Teuerung'] = inflation
+    df['Beschreibung'] = df['Beschreibung'].str.replace("\n", "")
     df['prefix'] = prefix['prefix']
     if 'suffix' in prefix:
         df['suffix'] = prefix['suffix']
     else:
-        df['suffix'] = ""
+        df['suffix'] = ""   
     df = pricegroup_separator(df)
     df = df.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
                    .map(lambda anr: anr.split(".")[0]))
@@ -84,7 +92,7 @@ def export_import_files(df, prefix):
         all_products.to_excel(file_name, index=False, engine="xlsxwriter")
     else:
         file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
-        all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding=ENCODING)
+        all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding='utf-8-sig')
     
 
 
