@@ -36,6 +36,7 @@ def import_csv():
 
 def transform_dataset(df, prefix):
     df = df.astype({'!Artikel-Nr.': str})
+    df = drop_unnamed_columns(df)
     df = df.iloc[1:]
     df = df.rename(columns={"!Artikel-Nr.": "ArtikelNr"})
     df = set_serie(df)
@@ -54,6 +55,11 @@ def transform_dataset(df, prefix):
     df = df.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
                    .map(lambda anr: anr.split(".")[0]))
     return df
+
+
+def drop_unnamed_columns(df):
+    unnamed_cols  =  df.columns.str.contains('Unnamed')
+    return df.drop(df[df.columns[unnamed_cols]], axis=1)
 
 
 def pricegroup_separator(df):
