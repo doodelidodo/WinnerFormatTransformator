@@ -21,8 +21,8 @@ SEPARATOR = ';'
 ENCODING = 'latin1'
 IMPORT_FOLDER = parser.get('Default', 'importFolder')
 EXPORT_FOLDER = parser.get('Default', 'exportFolder')
-EXPORT_TYPE = parser.get('Default', 'exportType')
 ERROR_FOLDER = parser.get('Default', 'errorFolder')
+PREFIX_FOLDER = parser.get('Default', 'prefixFolder')
 PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
 
@@ -43,6 +43,9 @@ def transform_dataset(df, prefix, price_per, inflation):
             .pipe(pricegroup_separator)
             .assign(Preisgruppe=lambda df: df['Preisgruppe'].str.split('.').str[0])
     )
+
+    write_test_files(f"{prefix['prefix']}.txt", PREFIX_FOLDER)
+
     return df
 
 
@@ -93,6 +96,9 @@ def export_files(data_frame, prefix, num_parts):
             file_name = f"{prefix}-all-{dt}-{i}.csv"
         else:
             file_name = f"{prefix}-all-{dt}.csv"
+
+        write_test_files(file_name, PREFIX_FOLDER)
+
         file_path = os.path.join(EXPORT_FOLDER, file_name)
         part_df.to_csv(file_path, index=False, sep=SEPARATOR, encoding='utf-8-sig')
 
@@ -107,6 +113,12 @@ def mark_variants(df):
     non_varianten['variante'] = 0
 
     return pd.concat([varianten, non_varianten])
+
+
+def write_test_files(name, path):
+    file_name = f"{path}{name}"
+    with codecs.open(file_name, "a", "utf-8") as f:
+        f.write(name)
 
 
 def error_handling(error, delete=True):

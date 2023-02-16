@@ -6,6 +6,7 @@
 /dist
 /build
 /output
+/prefix
 WinnerTransformator.cfg
 test.py
 katalogImport.spec
