@@ -6,6 +6,7 @@ import os
 import configparser
 import re
 import sys
+import numpy as np
 
 price_per = str(sys.argv[1])
 inflation = str(sys.argv[2])
@@ -25,6 +26,33 @@ ERROR_FOLDER = parser.get('Default', 'errorFolder')
 PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
 
+def transform_dataset(df, prefix, price_per, inflation):
+    df = df.astype({'!Artikel-Nr.': str})
+    df = (
+        df.pipe(drop_unnamed_columns)
+            .iloc[1:]
+            .rename(columns={"!Artikel-Nr.": "ArtikelNr"})
+            .pipe(set_serie)
+            .assign(ArtikelNr=lambda df: df['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True))
+            .assign(ArtikelNr=lambda df: df['ArtikelNr'].str.replace('#', ''))
+            .assign(ArtikelNr=lambda df: prefix['prefix'] + "-" + df['ArtikelNr'])
+            .assign(PreisPer=price_per, Teuerung=inflation)
+            .assign(Beschreibung=lambda df: df['Beschreibung'].str.replace("\n", " ").str.replace(";", " "))
+            .assign(prefix=prefix['prefix'])
+            .assign(suffix=str(prefix.get('suffix', '')))
+            .pipe(pricegroup_separator)
+            .assign(Preisgruppe=lambda df: df['Preisgruppe'].str.split('.').str[0])
+    )
+    return df
+
+
+def pricegroup_separator(df):
+    preisgruppen = [prod for prod in df.columns if 'Preisgruppe' in prod]
+    not_preisgruppen = [prod for prod in df.columns if 'Preisgruppe' not in prod]
+    df = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
+    return df.dropna(subset=['Preis']).sort_values(['ArtikelNr', 'Preisgruppe'])
+
+
 def get_file_from_folder():
     return os.listdir(IMPORT_FOLDER)[0]
 
@@ -34,44 +62,8 @@ def import_csv():
     return pd.DataFrame(csv_data)
 
 
-def transform_dataset(df, prefix):
-    df = df.astype({'!Artikel-Nr.': str})
-    df = drop_unnamed_columns(df)
-    df = df.iloc[1:]
-    df = df.rename(columns={"!Artikel-Nr.": "ArtikelNr"})
-    df = set_serie(df)
-    df['ArtikelNr'] = df['ArtikelNr'].str.replace(r'@@[0-9]{1,2}', '', regex=True)
-    df['ArtikelNr'] = df['ArtikelNr'].str.replace('#', '')
-    df['ArtikelNr'] = prefix['prefix'] + "-" + df['ArtikelNr']
-    df['PreisPer'] = price_per
-    df['Teuerung'] = inflation
-    df['Beschreibung'] = df['Beschreibung'].str.replace("\n", " ")
-    df['prefix'] = prefix['prefix']
-    if 'suffix' in prefix:
-        df['suffix'] = prefix['suffix']
-    else:
-        df['suffix'] = ""   
-    df = pricegroup_separator(df)
-    df = df.assign(Preisgruppe=lambda dataframe: dataframe['Preisgruppe']
-                   .map(lambda anr: anr.split(".")[0]))
-    return df
-
-
 def drop_unnamed_columns(df):
-    unnamed_cols  =  df.columns.str.contains('Unnamed')
-    return df.drop(df[df.columns[unnamed_cols]], axis=1)
-
-
-def pricegroup_separator(df):
-    preisgruppen = []
-    not_preisgruppen = []
-    for prod in df.columns:
-        if 'Preisgruppe' in prod:
-            preisgruppen.append(prod)
-        else:
-            not_preisgruppen.append(prod)
-    df = df.melt(id_vars=not_preisgruppen, value_vars=preisgruppen, var_name='Preisgruppe', value_name='Preis')
-    return df[df['Preis'].notnull()].sort_values(by=["ArtikelNr", "Preisgruppe"])
+    return df.filter(regex='^(?!Unnamed)', axis=1)
 
 
 def set_serie(df):
@@ -80,26 +72,29 @@ def set_serie(df):
 
 
 def get_prefix(file_name):
-    the_pref = ""
     for pref in PREFIXES:
         if get_label(file_name) == pref['FileName']:
-            the_pref = pref
-    if the_pref == "":
-        raise Exception("Kein Prefix gefunden")
-    else:
-        return the_pref
+            return pref
+    raise Exception("Kein passender Prefix gefunden")
 
 
-def export_import_files(df, prefix):
-    all_products = mark_variants(df)
-    dt = datetime.now().strftime("%Y%m%d-%H%M%S")
-    if EXPORT_TYPE == 'xlsx':
-        file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".xlsx"
-        all_products.to_excel(file_name, index=False, engine="xlsxwriter")
-    else:
-        file_name = EXPORT_FOLDER + prefix + "-all-" + dt + ".csv"
-        all_products.to_csv(file_name, index=False, sep=SEPARATOR, encoding='utf-8-sig')
+def export_files(data_frame, prefix, num_parts):
+    if data_frame.empty:
+        raise ValueError("The input DataFrame is empty")
+    if num_parts <= 0:
+        raise ValueError("The number of parts must be greater than 0")
     
+    all_products = mark_variants(data_frame)
+    part_data_frames = np.array_split(all_products, num_parts)
+
+    for i, part_df in enumerate(part_data_frames, start=1):
+        dt = datetime.now().strftime("%Y%m%d-%H%M%S")
+        if num_parts > 1: 
+            file_name = f"{prefix}-all-{dt}-{i}.csv"
+        else:
+            file_name = f"{prefix}-all-{dt}.csv"
+        file_path = os.path.join(EXPORT_FOLDER, file_name)
+        part_df.to_csv(file_path, index=False, sep=SEPARATOR, encoding='utf-8-sig')
 
 
 def mark_variants(df):
@@ -131,5 +126,6 @@ def delete_file():
 
 
 def get_label(file_name):
+    file_name = file_name.split('_')[0]
     file_name = re.sub('[^a-zA-Z.]+', '', file_name)
     return file_name.split('.')[0]
