@@ -44,8 +44,6 @@ def transform_dataset(df, prefix, price_per, inflation):
             .assign(Preisgruppe=lambda df: df['Preisgruppe'].str.split('.').str[0])
     )
 
-    write_test_files(f"{prefix['prefix']}.txt", PREFIX_FOLDER)
-
     return df
 
 
@@ -97,7 +95,7 @@ def export_files(data_frame, prefix, num_parts):
         else:
             file_name = f"{prefix}-all-{dt}.csv"
 
-        write_test_files(file_name, PREFIX_FOLDER)
+        write_test_files(prefix, PREFIX_FOLDER, file_name)
 
         file_path = os.path.join(EXPORT_FOLDER, file_name)
         part_df.to_csv(file_path, index=False, sep=SEPARATOR, encoding='utf-8-sig')
@@ -115,10 +113,10 @@ def mark_variants(df):
     return pd.concat([varianten, non_varianten])
 
 
-def write_test_files(name, path):
-    file_name = f"{path}{name}"
+def write_test_files(prefix, path, name):
+    file_name = f"{path}{prefix}.txt"
     with codecs.open(file_name, "a", "utf-8") as f:
-        f.write(name)
+        f.write(f"{name}\n")
 
 
 def error_handling(error, delete=True):
