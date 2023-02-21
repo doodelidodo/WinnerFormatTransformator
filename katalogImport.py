@@ -18,15 +18,15 @@ try:
                         export_files(new_catalog, prefix['prefix'], 1)
                     success()
                 except:
-                    error_handling("Der Katalog konnte nicht exportiert werden")
+                    error_handling("Der Katalog konnte nicht exportiert werden. Bitte melde dich beim Support")
             except:
-                error_handling("Der Katalog konnte nicht korrekt mutiert werden für den Import")
+                error_handling("Der Katalog konnte nicht korrekt mutiert werden für den Import. Bitte melde dich beim Support")
 
         except:
-            error_handling("Der Katalog konnte nicht korrekt importiert werden")
+            error_handling("Der Katalog konnte nicht korrekt importiert werden. Bitte melde dich beim Support")
 
     except:
-        error_handling("Für den Katalog " + import_file + " wurde kein Prefix in der Config definiert")
+        error_handling("Für den Katalog " + import_file + " wurde kein Prefix in der Config definiert. Bitte teile dem Support mit, für welchen Lieferanten und was für ein Prefix diese Artikel haben.")
 
 except:
-    error_handling("Der Katalog konnte nicht auf den Server geladen werden", False)
+    error_handling("Der Katalog konnte nicht auf den Server geladen werden, bitte versuche es erneut", False)

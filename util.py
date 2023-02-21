@@ -104,14 +104,10 @@ def export_files(data_frame, prefix, num_parts):
 def mark_variants(df):
     counts = df.ArtikelNr.value_counts()
 
-    varianten = df[df.ArtikelNr.isin(counts.index[counts.gt(1)])].copy()
-    non_varianten = df[df.ArtikelNr.isin(counts.index[counts.eq(1)])].copy()
+    df.loc[df.ArtikelNr.isin(counts.index[counts.gt(1)]), 'variante'] = 1
+    df.loc[df.ArtikelNr.isin(counts.index[counts.eq(1)]), 'variante'] = 0
 
-    varianten['variante'] = 1
-    non_varianten['variante'] = 0
-
-    return pd.concat([varianten, non_varianten])
-
+    return df
 
 def write_test_files(prefix, path, name):
     file_name = f"{path}{prefix}.txt"
