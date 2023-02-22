@@ -55,7 +55,12 @@ def pricegroup_separator(df):
 
 
 def get_file_from_folder():
-    return os.listdir(IMPORT_FOLDER)[0]
+    folder_path = IMPORT_FOLDER
+    all_files = os.listdir(folder_path)
+    files_with_timestamps = [(filename, os.path.getmtime(os.path.join(folder_path, filename))) for filename in all_files]
+    sorted_files = sorted(files_with_timestamps, key=lambda x: x[1], reverse=True)
+    return sorted_files[0][0]
+
 
 
 def import_csv():
@@ -110,12 +115,16 @@ def mark_variants(df):
     return df
 
 def write_test_files(prefix, path, name):
+    if not os.path.exists(path):
+        os.makedirs(path)
     file_name = f"{path}{prefix}.txt"
     with codecs.open(file_name, "a", "utf-8") as f:
         f.write(f"{name}\n")
 
 
 def error_handling(error, delete=True):
+    if not os.path.exists(ERROR_FOLDER):
+        os.makedirs(ERROR_FOLDER)
     file_name = ERROR_FOLDER + "error.txt"
     with codecs.open(file_name, "a", "utf-8") as f:
         f.write(error + "\n")
