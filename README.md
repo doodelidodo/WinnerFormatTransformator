@@ -17,13 +17,14 @@ Im Config File können folgende Werte gesetzt werden:
 
 ### Beispiel:
 
+```
 [Default]
 importFolder = D:/Abacus/abac/out/Prozesse/1001-Katalogimport/INPUT/
 exportFolder = D:/Abacus/abac/out/Prozesse/1001-Katalogimport/TEMP/
 errorFolder = D:/Abacus/abac/out/Prozesse/1001-Katalogimport/ERROR/
 prefixFolder = D:/Abacus/abac/out/Prozesse/1001-Katalogimport/PREFIX/
 
-```
+
 prefixes = [{
                 "FileName": "AEG",
                 "prefix": "AI",
