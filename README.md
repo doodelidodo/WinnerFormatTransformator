@@ -9,10 +9,10 @@ Im Config File können folgende Werte gesetzt werden:
 - exportFolder -> wohin wird / werden das File / die Files exportiert
 - errorFolder -> in diesem Folder wird ein error.txt File erstellt, wenn ein Problem auftritt. Der Fehler wird als neue Zeile eingefügt, welcher dann via Report im Abacus ausgegebn werden kann
 - prefixFolder -> in diesem Folder wird ein Text-File generiert, mit dem Prefix vom Lieferanten. Zudem werden alle Files in diesem txt aufgeführt, die generiert wurden. 
-- prefixes -> in diesem json können die verschiedenen Kataloge hinterlegt werden. Mögliche Atribute sind
--- FileName -> eindeutige Bezeichnung vom File. So fängt der Name an vom Katalog-File
--- prefix -> mit welchem Prefix die Artikel von diesem Katalog importiert werden sollen
--- suffix -> dieser Wert ist wichtig für die Kondition für die Lieferanten
+- prefixes -> in diesem json können die verschiedenen Kataloge hinterlegt werden. Mögliche Attribute sind
+    - FileName -> eindeutige Bezeichnung vom File. So fängt der Name an vom Katalog-File
+    - prefix -> mit welchem Prefix die Artikel von diesem Katalog importiert werden sollen
+    - suffix -> dieser Wert ist wichtig für die Kondition für die Lieferanten
 
 
 ### Beispiel:
