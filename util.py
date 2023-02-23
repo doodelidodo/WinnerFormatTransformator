@@ -63,8 +63,8 @@ def get_file_from_folder():
 
 
 
-def import_csv():
-    csv_data = pd.read_csv(IMPORT_FOLDER + get_file_from_folder(), sep=SEPARATOR, encoding=ENCODING, low_memory=False)
+def import_csv(file):
+    csv_data = pd.read_csv(IMPORT_FOLDER + file, sep=SEPARATOR, encoding=ENCODING, low_memory=False)
     return pd.DataFrame(csv_data)
 
 
@@ -122,22 +122,18 @@ def write_test_files(prefix, path, name):
         f.write(f"{name}\n")
 
 
-def error_handling(error, delete=True):
+def error_handling(error, file, delete=True):
     if not os.path.exists(ERROR_FOLDER):
         os.makedirs(ERROR_FOLDER)
     file_name = ERROR_FOLDER + "error.txt"
     with codecs.open(file_name, "a", "utf-8") as f:
         f.write(error + "\n")
     if delete:
-        delete_file()
+        delete_file(file)
 
 
-def success():
-    delete_file()
-
-
-def delete_file():
-    os.remove(IMPORT_FOLDER + get_file_from_folder())
+def delete_file(file):
+    os.remove(IMPORT_FOLDER + file)
 
 
 def get_label(file_name):
