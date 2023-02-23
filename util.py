@@ -11,9 +11,7 @@ import numpy as np
 price_per = str(sys.argv[1])
 inflation = str(sys.argv[2])
 
-
 CONFIG = "D:/Abacus/WinnerImport/WinnerTransformator.cfg"
-
 parser = configparser.ConfigParser()
 parser.read(CONFIG)
 
@@ -27,9 +25,9 @@ PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
 
 def transform_dataset(df, prefix, price_per, inflation):
-    df = df.astype({'!Artikel-Nr.': str})
     df = (
-        df.pipe(drop_unnamed_columns)
+        df.astype({'!Artikel-Nr.': str})
+            .pipe(drop_unnamed_columns)
             .iloc[1:]
             .rename(columns={"!Artikel-Nr.": "ArtikelNr"})
             .pipe(set_serie)
@@ -60,7 +58,6 @@ def get_file_from_folder():
     files_with_timestamps = [(filename, os.path.getmtime(os.path.join(folder_path, filename))) for filename in all_files]
     sorted_files = sorted(files_with_timestamps, key=lambda x: x[1], reverse=True)
     return sorted_files[0][0]
-
 
 
 def import_csv(file):
