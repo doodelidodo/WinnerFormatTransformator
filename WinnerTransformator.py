@@ -27,9 +27,9 @@ def main():
 
     try:
         if len(new_catalog) > 100000:
-            export_files(new_catalog, prefix['prefix'], 4)
+            export_files(new_catalog, prefix, 4)
         else:
-            export_files(new_catalog, prefix['prefix'], 1)
+            export_files(new_catalog, prefix, 1)
         delete_file(import_file)
     except:
         error_handling("Der Katalog konnte nicht exportiert werden.", import_file)

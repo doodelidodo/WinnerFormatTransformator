@@ -25,6 +25,8 @@ PREFIXES = json.loads(parser.get('Default', 'prefixes'))
 
 
 def transform_dataset(df, prefix, price_per, inflation):
+    the_prefix = set_prefix(prefix)
+
     df = (
         df.astype({'!Artikel-Nr.': str})
             .pipe(drop_unnamed_columns)
@@ -36,7 +38,7 @@ def transform_dataset(df, prefix, price_per, inflation):
             .assign(ArtikelNr=lambda df: prefix['prefix'] + "-" + df['ArtikelNr'])
             .assign(PreisPer=price_per, Teuerung=inflation)
             .assign(Beschreibung=lambda df: df['Beschreibung'].str.replace("\n", " ").str.replace(";", " "))
-            .assign(prefix=prefix['prefix'])
+            .assign(prefix = the_prefix)
             .assign(suffix=str(prefix.get('suffix', '')))
             .pipe(pricegroup_separator)
             .assign(Preisgruppe=lambda df: df['Preisgruppe'].str.split('.').str[0])
@@ -80,6 +82,11 @@ def get_prefix(file_name):
             return pref
     raise Exception("Kein passender Prefix gefunden")
 
+def set_prefix(prefix):
+    if 'prefixOrigin' in prefix:
+        return prefix['prefixOrigin']
+    else:
+        return prefix['prefix']
 
 def export_files(data_frame, prefix, num_parts):
     if data_frame.empty:
@@ -87,17 +94,21 @@ def export_files(data_frame, prefix, num_parts):
     if num_parts <= 0:
         raise ValueError("The number of parts must be greater than 0")
     
+    prefix_file = prefix['prefix']
+    prefix_testfile = set_prefix(prefix)
+
+
     all_products = mark_variants(data_frame)
     part_data_frames = np.array_split(all_products, num_parts)
 
     for i, part_df in enumerate(part_data_frames, start=1):
         dt = datetime.now().strftime("%Y%m%d-%H%M%S")
         if num_parts > 1: 
-            file_name = f"{prefix}-all-{dt}-{i}.csv"
+            file_name = f"{prefix_file}-all-{dt}-{i}.csv"
         else:
-            file_name = f"{prefix}-all-{dt}.csv"
+            file_name = f"{prefix_file}-all-{dt}.csv"
 
-        write_test_files(prefix, PREFIX_FOLDER, file_name)
+        write_test_files(prefix_testfile, PREFIX_FOLDER, file_name)
 
         file_path = os.path.join(EXPORT_FOLDER, file_name)
         part_df.to_csv(file_path, index=False, sep=SEPARATOR, encoding='utf-8-sig')
