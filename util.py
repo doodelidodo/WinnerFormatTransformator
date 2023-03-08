@@ -82,31 +82,32 @@ def get_prefix(file_name):
             return pref
     raise Exception("Kein passender Prefix gefunden")
 
+
 def set_prefix(prefix):
     if 'prefixOrigin' in prefix:
         return prefix['prefixOrigin']
     else:
         return prefix['prefix']
 
-def export_files(data_frame, prefix, num_parts):
+
+def export_files(data_frame, prefix, num_parts, name_file):
     if data_frame.empty:
         raise ValueError("The input DataFrame is empty")
     if num_parts <= 0:
         raise ValueError("The number of parts must be greater than 0")
     
-    prefix_file = prefix['prefix']
     prefix_testfile = set_prefix(prefix)
-
 
     all_products = mark_variants(data_frame)
     part_data_frames = np.array_split(all_products, num_parts)
 
+    name_file = name_file.split('_')[0]
     for i, part_df in enumerate(part_data_frames, start=1):
         dt = datetime.now().strftime("%Y%m%d-%H%M%S")
         if num_parts > 1: 
-            file_name = f"{prefix_file}-all-{dt}-{i}.csv"
+            file_name = f"{name_file}-{dt}-{i}.csv"
         else:
-            file_name = f"{prefix_file}-all-{dt}.csv"
+            file_name = f"{name_file}-{dt}.csv"
 
         write_test_files(prefix_testfile, PREFIX_FOLDER, file_name)
 
@@ -122,6 +123,7 @@ def mark_variants(df):
 
     return df
 
+
 def write_test_files(prefix, path, name):
     if not os.path.exists(path):
         os.makedirs(path)
@@ -135,7 +137,7 @@ def error_handling(error, file, delete=True):
         os.makedirs(ERROR_FOLDER)
     file_name = ERROR_FOLDER + "error.txt"
     with codecs.open(file_name, "a", "utf-8") as f:
-        f.write(error + "\n")
+        f.write(f"Vorgang abgebrochen, Fehlercode {error} inkl. Katalogname an Abacus-IT melden. \n")
     if delete:
         delete_file(file)
 
